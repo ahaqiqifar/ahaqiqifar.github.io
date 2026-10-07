@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { content as c } from './content'
+import Publications from './Publications'
 
 const EASE = 'cubic-bezier(0.76, 0, 0.24, 1)'
 const delay = (ms: number) => ({ animationDelay: `${ms}ms` })
@@ -30,6 +31,7 @@ export default function App() {
   })
 
   return (
+    <main>
     <section className="relative h-[100dvh] w-full overflow-hidden font-hn text-cream">
       {/* Background */}
       <img src={c.backgroundSrc} alt="" className="anim-fade-in absolute inset-0 h-full w-full object-cover" />
@@ -184,5 +186,7 @@ export default function App() {
         </aside>
       </div>
     </section>
+      {c.publications && <Publications items={c.publications} self={c.self} scholarUrl={c.scholarUrl} />}
+    </main>
   )
 }
