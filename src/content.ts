@@ -60,7 +60,7 @@ export const abolfazl: Content = {
   nav: [
     { label: 'Research', href: '#' },
     { label: 'Projects', href: '#' },
-    { label: 'Publications', href: '#publications' },
+    { label: 'Publications', href: '/publications/' },
     { label: 'CV', href: '#' },
   ],
   social: [
@@ -72,8 +72,8 @@ export const abolfazl: Content = {
   footerLeft: ['Neuroscience Researcher', 'Data Scientist', 'Obsessed by the Brain'],
   footerRight: ['Open to', 'Research Collaborations'],
   // hero-cutout.webp is generated from hero-bg.webp by scripts/cutout.py
-  backgroundSrc: 'images/hero-bg.webp',
-  portraitSrc: 'images/hero-cutout.webp',
+  backgroundSrc: '/images/hero-bg.webp',
+  portraitSrc: '/images/hero-cutout.webp',
   self: 'Abolfazl HaqiqiFar',
   scholarUrl: SCHOLAR,
   // newest first

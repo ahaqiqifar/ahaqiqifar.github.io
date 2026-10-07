@@ -7,10 +7,6 @@
   --font-serif: "Helvetica Neue ME", Helvetica, Arial, sans-serif;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   margin: 0;
   background: #000;
@@ -45,9 +41,6 @@ body {
 .marquee { animation: marquee 30s linear infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   .anim-fade-in,
   .anim-rise-in,
   .anim-fade-up,

@@ -1,9 +1,18 @@
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// Relative base so the build works both at the domain root and under a sub-path on GitHub Pages
+// Served from the root of ahaqiqifar.github.io; one HTML entry per page
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(import.meta.dirname, 'index.html'),
+        publications: resolve(import.meta.dirname, 'publications/index.html'),
+      },
+    },
+  },
 })

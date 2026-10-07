@@ -11,5 +11,6 @@ npm install
 npm run dev
 ```
 
-- Page text and links: `src/content.ts` (open the site with `?v=reference` to see the original design it is based on)
+- Pages: home (`index.html` → `src/App.tsx`) and publications (`publications/index.html` → `src/Publications.tsx`)
+- Page text, links and the publication list: `src/content.ts` (open the site with `?v=reference` to see the original design it is based on)
 - Hero photo: `public/images/hero-bg.webp`; regenerate the cut-out with `python3 scripts/cutout.py`
