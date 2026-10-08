@@ -12,6 +12,7 @@ export default defineConfig({
       input: {
         main: resolve(import.meta.dirname, 'index.html'),
         publications: resolve(import.meta.dirname, 'publications/index.html'),
+        cv: resolve(import.meta.dirname, 'cv/index.html'),
       },
     },
   },

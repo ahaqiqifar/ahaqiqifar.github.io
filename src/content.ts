@@ -10,6 +10,24 @@ export type Publication = {
   summary: string
 }
 
+export type CvEntry = {
+  title: string
+  org: string
+  place?: string
+  dates: string
+  details: string[]
+}
+
+export type Cv = {
+  role: string
+  summary: string
+  education: CvEntry[]
+  interests: string[]
+  projects: CvEntry[]
+  presentations: { title: string; authors: string[]; venue: string; year: string }[]
+  skills: { area: string; items: string }[]
+}
+
 export type Content = {
   title: string
   brand: string
@@ -24,6 +42,7 @@ export type Content = {
   self?: string // highlighted in author lists
   scholarUrl?: string
   publications?: Publication[]
+  cv?: Cv
 }
 
 // The original design, kept verbatim as a reference (open the site with ?v=reference)
@@ -61,7 +80,7 @@ export const abolfazl: Content = {
     { label: 'Research', href: '#' },
     { label: 'Projects', href: '#' },
     { label: 'Publications', href: '/publications/' },
-    { label: 'CV', href: '#' },
+    { label: 'CV', href: '/cv/' },
   ],
   social: [
     { label: 'GitHub', href: 'https://github.com/AbolfazlHaqiqiFar' },
@@ -108,6 +127,120 @@ export const abolfazl: Content = {
         'Balanced triads in functional brain networks live longer and reach higher peak energy than imbalanced ones, supporting structural balance theory.',
     },
   ],
+  cv: {
+    role: 'PhD Candidate in Computational Neuroscience',
+    summary:
+      'Computational neuroscientist and PhD candidate at the Basque Center on Cognition, Brain and Language (BCBL), trained in statistical physics and network science. Develops whole-brain models (virtual brain twins) and information-theoretic methods to study how brain network dynamics support function in health and disease, from glioma to bilingualism and dyslexia. Published work on directed information flow and structural balance in functional brain networks.',
+    education: [
+      {
+        title: 'PhD Candidate',
+        org: 'BCBL, Basque Center on Cognition, Brain and Language',
+        place: 'San Sebastián, Spain',
+        dates: 'Jul 2026 – Present',
+        details: ['Advisors: Dr. Lucia Amoruso and Dr. Manuel Carreiras', 'Research area: Brain Network Modelling'],
+      },
+      {
+        title: 'MSc in Statistical Physics and Complex Systems',
+        org: 'Department of Physics, Shahid Beheshti University',
+        place: 'Tehran, Iran',
+        dates: 'Sep 2023 – Dec 2025',
+        details: ['Advisor: Dr. Reza Jafari', 'Research area: Network Science'],
+      },
+      {
+        title: 'BSc in Physics',
+        org: 'Department of Physics, Bu-Ali Sina University',
+        place: 'Hamedan, Iran',
+        dates: '2018 – 2022',
+        details: ['Advisor: Dr. Farhad H. Jafarpour', 'Research area: Biophysics'],
+      },
+      {
+        title: 'Spring College in the Physics of Complex Systems',
+        org: 'ICTP–SISSA',
+        place: 'Trieste, Italy',
+        dates: '2022',
+        details: [],
+      },
+    ],
+    interests: [
+      'Whole-Brain Modelling & Virtual Brain Twins',
+      'Information Dynamics in Brain Networks',
+      'Brain Network Mechanisms of Language, Bilingualism & Dyslexia',
+    ],
+    projects: [
+      {
+        title: 'BRIDGE: Bridging the Gap — Bilingualism and Dyslexia',
+        org: 'PhD Thesis Project, BCBL',
+        dates: '2026 – Present',
+        details: [
+          'Studying how bilingual experience and orthographic transparency (Spanish–Basque vs. Spanish–English) shape the reading network of typical and dyslexic readers aged 9–13, using multimodal MRI and MEG',
+          'Planned analyses: graph-theoretic metrics, transfer entropy, and computational models of the visual word form area',
+        ],
+      },
+      {
+        title: 'Virtual Brain Twins for Glioma Patients: Connectome-Based Modelling Fitted to MEG',
+        org: 'PhD Project, BCBL',
+        dates: '2026 – Present',
+        details: [
+          'Patient-specific virtual brain twins built from diffusion-MRI structural connectomes and fitted to pre-operative MEG with a dynamic mean-field model, aimed at predicting post-operative brain activity after virtual resection',
+          'Pipeline: tractography and connectome construction (MRtrix3, FreeSurfer), MEG source reconstruction (MNE-Python, LCMV beamformer)',
+        ],
+      },
+      {
+        title: 'Multilingualism and Brain Age: Harmonized MRI Preprocessing',
+        org: 'Collaboration with REDLat, BarcelonaBeta and McGill',
+        dates: '2026 – Present',
+        details: [
+          'Preprocessing about 800 BCBL scans (fMRI with fMRIPrep, T1 segmentation with CAT12) following the REDLat pipeline, for cross-site brain-age and healthy-aging analyses',
+        ],
+      },
+    ],
+    presentations: [
+      {
+        title: 'Energy-Based Generative Transformer Models for Neural Circuit Modeling',
+        authors: ['Abolfazl HaqiqiFar', 'Reza Jafari'],
+        venue: 'SNUFA',
+        year: '2025',
+      },
+      {
+        title: 'Information-Theoretic Graph Neural Networks for Modeling Brain Connectivity',
+        authors: ['Abolfazl HaqiqiFar', 'Majid Saberi', 'Reza Jafari'],
+        venue: 'SNUFA',
+        year: '2025',
+      },
+      {
+        title: 'Exploring Brain Energy Modeling: Insights into Autism Spectrum Disorder',
+        authors: ['Abolfazl HaqiqiFar', 'Majid Saberi'],
+        venue: '12th Basic and Clinical Neuroscience Congress',
+        year: '2023',
+      },
+    ],
+    skills: [
+      {
+        area: 'Whole-Brain Modelling',
+        items:
+          'Dynamic mean-field modelling (feedback inhibition control), virtual brain twins and virtual resections, model fitting and parameter estimation, stochastic dynamics, anomalous diffusion on networks',
+      },
+      {
+        area: 'Neuroimaging & Electrophysiology',
+        items:
+          'Diffusion-MRI tractography and structural connectomes (MRtrix3, FSL, FreeSurfer), fMRI and T1 preprocessing (fMRIPrep, CAT12), MEG forward modelling and source reconstruction (MNE-Python, LCMV beamformer), EEG network analysis',
+      },
+      {
+        area: 'Network Neuroscience',
+        items:
+          'Functional and structural connectivity, graph-theoretic analysis, temporal and signed networks, structural balance, information-theoretic measures (Transfer Entropy, Mutual Information)',
+      },
+      {
+        area: 'Machine Learning',
+        items: 'Graph neural networks, generative transformers, energy-based models, representation learning',
+      },
+      {
+        area: 'Programming',
+        items:
+          'Python (PyTorch, TensorFlow, Keras, NumPy, Pandas, Scikit-learn, NetworkX), C++, MATLAB, R; HPC clusters (SLURM, SGE)',
+      },
+    ],
+  },
 }
 
 export const content: Content =
