@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page not found — Abolfazl HaqiqiFar</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="https://db.onlinewebfonts.com/c/95cecf452d3208890088a5b4c19c7ecf?family=Helvetica+Neue+ME" media="print" onload="this.media='all'" />
+    <style>
+      :root { --cream: #efeee9; --bg: #141414; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--cream); }
+      body { font-family: 'Helvetica Neue ME', Helvetica, Arial, sans-serif; min-height: 100dvh; display: flex; flex-direction: column; padding: 24px; }
+      a { color: inherit; text-decoration: none; transition: opacity .3s; }
+      a:hover { opacity: .6; }
+      header { font-size: 18px; letter-spacing: .025em; }
+      main { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+      h1 { margin: 0; font-weight: 400; font-size: clamp(96px, 26vh, 280px); line-height: .9; letter-spacing: -.02em; }
+      p { margin: 24px 0 0; font-size: clamp(20px, 3vw, 30px); line-height: 1.25; max-width: 32ch; }
+      .rule { height: 2px; background: var(--cream); margin: 40px 0 0; }
+      .trace { display: block; width: 100%; height: 40px; margin-top: 40px; color: rgba(239, 238, 233, .35); }
+      footer { display: flex; justify-content: space-between; font-size: 14px; padding-top: 24px; border-top: 1px solid rgba(239, 238, 233, .2); }
+      @media (min-width: 640px) { body { padding: 32px 40px; } }
+    </style>
+  </head>
+  <body>
+    <header><a href="/">Abolfazl</a></header>
+    <main>
+      <h1>404</h1>
+      <p>This page isn’t connected to the network. The signal stops here.</p>
+      <!-- a flat-lining trace: oscillation that decays to silence -->
+      <svg class="trace" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+        <path fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"
+          d="M0 20 L40 14 L80 27 L120 9 L160 31 L200 12 L240 26 L280 16 L320 23 L360 18 L400 21 L440 19 L480 20 L1200 20" />
+      </svg>
+    </main>
+    <footer>
+      <a href="/">Back to home →</a>
+      <a href="/research/">Research →</a>
+    </footer>
+  </body>
+</html>

@@ -13,6 +13,8 @@ export default defineConfig({
         main: resolve(import.meta.dirname, 'index.html'),
         publications: resolve(import.meta.dirname, 'publications/index.html'),
         cv: resolve(import.meta.dirname, 'cv/index.html'),
+        research: resolve(import.meta.dirname, 'research/index.html'),
+        projects: resolve(import.meta.dirname, 'projects/index.html'),
       },
     },
   },

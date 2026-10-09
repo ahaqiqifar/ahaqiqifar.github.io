@@ -1,52 +1,6 @@
-import type { ReactNode } from 'react'
-import { content as c, type CvEntry } from './content'
+import { content as c } from './content'
 import PageShell from './PageShell'
-
-const delay = (ms: number) => ({ animationDelay: `${ms}ms` })
-
-// One CV section: small label on the left, content on the right (stacked on phones)
-function Section({ label, index, children }: { label: string; index: number; children: ReactNode }) {
-  return (
-    <section
-      className="anim-fade-up grid gap-6 border-b border-cream/20 py-10 sm:grid-cols-[9rem_1fr] sm:gap-10 sm:py-14"
-      style={delay(200 + index * 90)}
-    >
-      <h2 className="m-0 text-sm font-normal text-cream/50">{label}</h2>
-      <div className="max-w-4xl">{children}</div>
-    </section>
-  )
-}
-
-function Entry({ e }: { e: CvEntry }) {
-  return (
-    <div className="[&+&]:mt-10">
-      <h3 className="m-0 text-2xl font-normal leading-tight sm:text-3xl">{e.title}</h3>
-      <p className="mt-2 mb-0 text-sm text-cream/75 sm:text-base">{e.org}</p>
-      <p className="mt-1 mb-0 text-sm text-cream/50">{[e.place, e.dates].filter(Boolean).join(' · ')}</p>
-      {e.details.length > 0 && (
-        <ul className="mt-4 mb-0 list-none space-y-2 p-0">
-          {e.details.map((d) => (
-            <li key={d} className="relative pl-5 text-sm leading-relaxed text-cream/75 sm:text-base">
-              <span className="absolute left-0 text-cream/50">—</span>
-              {d}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  )
-}
-
-const Authors = ({ names }: { names: string[] }) => (
-  <>
-    {names.map((a, k) => (
-      <span key={a}>
-        {k > 0 && ', '}
-        <span className={a === c.self ? 'text-cream' : undefined}>{a}</span>
-      </span>
-    ))}
-  </>
-)
+import { Authors, delay, Entry, Section } from './blocks'
 
 export default function CvPage() {
   const cv = c.cv
@@ -71,6 +25,18 @@ export default function CvPage() {
         ))}
       </Section>
 
+      {cv.fellowships.length > 0 && (
+        <Section label="Fellowships" index={i++}>
+          {cv.fellowships.map((f) => (
+            <div key={f.title} className="[&+&]:mt-8">
+              <h3 className="m-0 text-2xl font-normal leading-tight sm:text-3xl">{f.title}</h3>
+              <p className="mt-2 mb-0 text-sm text-cream/75 sm:text-base">{f.org}</p>
+              <p className="mt-1 mb-0 text-sm text-cream/50">{f.dates}</p>
+            </div>
+          ))}
+        </Section>
+      )}
+
       <Section label="Research Interests" index={i++}>
         <ul className="m-0 list-none space-y-2 p-0">
           {cv.interests.map((t) => (
@@ -83,10 +49,14 @@ export default function CvPage() {
         <Section label="Publications" index={i++}>
           <ol className="m-0 list-none space-y-6 p-0">
             {pubs.map((p) => (
-              <li key={p.url}>
-                <a href={p.url} target="_blank" rel="noreferrer" className="text-lg leading-snug transition-opacity duration-300 hover:opacity-60 sm:text-xl">
-                  {p.title}
-                </a>
+              <li key={p.title}>
+                {p.url ? (
+                  <a href={p.url} target="_blank" rel="noreferrer" className="text-lg leading-snug transition-opacity duration-300 hover:opacity-60 sm:text-xl">
+                    {p.title}
+                  </a>
+                ) : (
+                  <span className="text-lg leading-snug sm:text-xl">{p.title}</span>
+                )}
                 <p className="mt-1 mb-0 text-sm text-cream/50">
                   <Authors names={p.authors} />
                 </p>
@@ -117,7 +87,7 @@ export default function CvPage() {
                 <Authors names={p.authors} />
               </p>
               <p className="mt-1 mb-0 text-sm text-cream/50">
-                {p.venue} · {p.year}
+                {[p.kind, p.venue, p.year].filter(Boolean).join(' · ')}
               </p>
             </li>
           ))}

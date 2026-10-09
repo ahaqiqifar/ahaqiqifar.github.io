@@ -23,7 +23,7 @@ export default function PublicationList({ heading: Heading, animate = false }: P
       <ol className="m-0 list-none p-0">
         {items.map((p, i) => (
           <li
-            key={p.url}
+            key={p.title}
             className={`${anim(250 + i * 120).className} grid gap-4 border-b border-cream/20 py-8 sm:grid-cols-[9rem_1fr_auto] sm:gap-10 sm:py-10`}
             style={anim(250 + i * 120).style}
           >
@@ -35,9 +35,13 @@ export default function PublicationList({ heading: Heading, animate = false }: P
 
             <div className="max-w-3xl">
               <Title className="m-0 text-2xl font-normal leading-tight sm:text-3xl">
-                <a href={p.url} target="_blank" rel="noreferrer" className="transition-opacity duration-300 hover:opacity-60">
-                  {p.title}
-                </a>
+                {p.url ? (
+                  <a href={p.url} target="_blank" rel="noreferrer" className="transition-opacity duration-300 hover:opacity-60">
+                    {p.title}
+                  </a>
+                ) : (
+                  p.title
+                )}
               </Title>
               <p className="mt-3 mb-0 text-sm leading-relaxed text-cream/50">
                 {p.authors.map((a, k) => (
@@ -51,14 +55,18 @@ export default function PublicationList({ heading: Heading, animate = false }: P
               <p className="mt-4 mb-0 text-sm leading-relaxed text-cream/75 sm:text-base">{p.summary}</p>
             </div>
 
-            <a
-              href={p.url}
-              target="_blank"
-              rel="noreferrer"
-              className="self-start text-sm whitespace-nowrap transition-opacity duration-300 hover:opacity-60"
-            >
-              Read ↗
-            </a>
+            {p.url ? (
+              <a
+                href={p.url}
+                target="_blank"
+                rel="noreferrer"
+                className="self-start text-sm whitespace-nowrap transition-opacity duration-300 hover:opacity-60"
+              >
+                Read ↗
+              </a>
+            ) : (
+              <span className="self-start text-sm whitespace-nowrap text-cream/50">Forthcoming</span>
+            )}
           </li>
         ))}
       </ol>

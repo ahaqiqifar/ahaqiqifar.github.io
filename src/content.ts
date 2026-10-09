@@ -4,9 +4,9 @@ export type Publication = {
   title: string
   authors: string[]
   venue: string
-  kind: 'Journal article' | 'Preprint'
+  kind: 'Journal article' | 'Preprint' | 'Under review'
   date: string
-  url: string
+  url?: string
   summary: string
 }
 
@@ -24,9 +24,19 @@ export type Cv = {
   education: CvEntry[]
   interests: string[]
   projects: CvEntry[]
-  presentations: { title: string; authors: string[]; venue: string; year: string }[]
+  fellowships: { title: string; org: string; dates: string }[]
+  presentations: { title: string; authors: string[]; venue: string; year: string; kind?: string }[]
   skills: { area: string; items: string }[]
 }
+
+export type ResearchTheme = {
+  title: string
+  text: string
+  methods: string
+  links: Link[]
+}
+
+export type Repo = { name: string; text: string; lang: string; year: string }
 
 export type Content = {
   title: string
@@ -43,6 +53,8 @@ export type Content = {
   scholarUrl?: string
   publications?: Publication[]
   cv?: Cv
+  research?: { intro: string; themes: ResearchTheme[] }
+  code?: { user: string; repos: Repo[] }
 }
 
 // The original design, kept verbatim as a reference (open the site with ?v=reference)
@@ -77,8 +89,8 @@ export const abolfazl: Content = {
   brand: 'Abolfazl',
   year: '2026',
   nav: [
-    { label: 'Research', href: '#' },
-    { label: 'Projects', href: '#' },
+    { label: 'Research', href: '/research/' },
+    { label: 'Projects', href: '/projects/' },
     { label: 'Publications', href: '/publications/' },
     { label: 'CV', href: '/cv/' },
   ],
@@ -86,9 +98,10 @@ export const abolfazl: Content = {
     { label: 'GitHub', href: 'https://github.com/AbolfazlHaqiqiFar' },
     { label: 'Scholar', href: SCHOLAR },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/abolfazl-haqiqifar/' },
+    { label: 'ORCID', href: 'https://orcid.org/0009-0003-9705-4805' },
   ],
   marquee: ['Abolfazl', 'HaqiqiFar'],
-  footerLeft: ['Neuroscience Researcher', 'Data Scientist', 'Obsessed by the Brain'],
+  footerLeft: ['Computational Neuroscientist', 'PhD Candidate at BCBL', 'Obsessed by the Brain'],
   footerRight: ['Open to', 'Research Collaborations'],
   // hero-cutout.webp is generated from hero-bg.webp by scripts/cutout.py
   backgroundSrc: '/images/hero-bg.webp',
@@ -104,17 +117,18 @@ export const abolfazl: Content = {
       kind: 'Journal article',
       date: 'Aug 2026',
       url: 'https://doi.org/10.1038/s41598-026-66002-5',
-      summary: 'Directed information flow within canonical brain networks in autism, measured with transfer entropy.',
+      summary:
+        'Transfer entropy maps directed information flow between canonical brain networks. In autism the main hubs shift to the frontoparietal and limbic networks, feedback weakens and the backbone fragments; these flow patterns separate autistic and control groups with about 91% accuracy.',
     },
     {
       title: 'A Symphony of Genres: Driving Information Dynamics in Functional Brain Networks',
       authors: ['Abolfazl HaqiqiFar', 'Azin Shirmohammadi', 'Amirhossein Yekta', 'G. Reza Jafari'],
-      venue: 'bioRxiv',
+      venue: 'bioRxiv · under review at Scientific Reports',
       kind: 'Preprint',
       date: 'Apr 2026',
       url: 'https://doi.org/10.64898/2026.04.22.720162',
       summary:
-        'Different music genres drive distinct patterns of neural communication: rhythmically complex styles engage hub regions, while ambient genres promote more dispersed connectivity.',
+        'EEG from 20 listeners across 12 genres: rhythmically and structurally complex music strengthens a super-rich club of hub regions, while ambient and traditional genres spread connectivity out.',
     },
     {
       title: 'Empirical evidence for structural balance theory in functional brain networks',
@@ -124,9 +138,63 @@ export const abolfazl: Content = {
       date: 'Jan 2026',
       url: 'https://doi.org/10.3389/fnetp.2025.1681597',
       summary:
-        'Balanced triads in functional brain networks live longer and reach higher peak energy than imbalanced ones, supporting structural balance theory.',
+        'In resting-state fMRI from the Human Connectome Project, balanced triads live longer and reach higher peak energy than imbalanced ones, beyond null models, supporting strong structural balance theory.',
+    },
+    {
+      title: 'Inverse Ising Problem: Theory and Challenges of Higher-Order Interactions',
+      authors: ['Paria Naghizadeh', 'Behrouz Askari', 'Abolfazl HaqiqiFar', 'G. Reza Jafari'],
+      venue: 'Manuscript under review',
+      kind: 'Under review',
+      date: '2026',
+      summary: 'Theory and open challenges of inferring higher-order (beyond pairwise) interactions with inverse Ising models.',
     },
   ],
+  research: {
+    intro:
+      'I study how the brain’s wiring shapes its dynamics, and how those dynamics carry information. Trained in statistical physics and network science, I build whole-brain models and information-theoretic tools and apply them from glioma to bilingualism and dyslexia.',
+    themes: [
+      {
+        title: 'Virtual Brain Twins',
+        text: 'Patient-specific whole-brain models built from diffusion-MRI connectomes and fitted to MEG with a dynamic mean-field model. In glioma patients, these twins let us perform virtual resections and predict how brain activity will reorganise after surgery.',
+        methods: 'Dynamic mean-field models · structural connectomes · MEG source reconstruction',
+        links: [{ label: 'Project', href: '/projects/' }],
+      },
+      {
+        title: 'Information Dynamics',
+        text: 'How information moves between brain regions. With transfer entropy I map directed information flow between canonical brain networks: in autism, where the hubs of information flow shift and the network backbone fragments, and in EEG recorded while people listen to different music genres, where complex rhythms recruit a super-rich club of hub regions.',
+        methods: 'Transfer entropy · mutual information · graph theory',
+        links: [
+          { label: 'Scientific Reports', href: 'https://doi.org/10.1038/s41598-026-66002-5' },
+          { label: 'bioRxiv', href: 'https://doi.org/10.64898/2026.04.22.720162' },
+        ],
+      },
+      {
+        title: 'Language, Bilingualism & Dyslexia',
+        text: 'How bilingual experience and the transparency of a writing system (Spanish–Basque vs. Spanish–English) shape the reading network of children aged 9–13, with and without dyslexia, combining multimodal MRI and MEG.',
+        methods: 'Multimodal MRI · MEG · graph metrics · models of the visual word form area',
+        links: [{ label: 'BRIDGE project', href: '/projects/' }],
+      },
+      {
+        title: 'Signed & Higher-Order Networks',
+        text: 'Statistical-physics tools for brain networks beyond simple positive, pairwise links: testing structural balance theory in signed functional networks from the Human Connectome Project, where balanced triads live longer and reach higher peak energy, and inverse Ising methods for higher-order interactions.',
+        methods: 'Structural balance · signed and temporal networks · inverse Ising models',
+        links: [{ label: 'Frontiers in Network Physiology', href: 'https://doi.org/10.3389/fnetp.2025.1681597' }],
+      },
+    ],
+  },
+  code: {
+    user: 'https://github.com/AbolfazlHaqiqiFar',
+    repos: [
+      { name: 'Information-Flow-in-Brain-and-Music', text: 'Notebooks for analysing information flow in brain networks during music listening, including an autoencoder model.', lang: 'Jupyter', year: '2025' },
+      { name: 'FMRI-Data-analyses', text: 'fMRI analysis notebooks: subject time series, independent components (FSL MELODIC) and correlation maps.', lang: 'Jupyter', year: '2025' },
+      { name: 'BCNC1', text: 'Brain-energy modelling on the CC200 atlas, the code behind the autism talk at the Basic and Clinical Neuroscience Congress.', lang: 'Python', year: '2023' },
+      { name: 'IsingModelSimulation', text: 'Monte Carlo simulation of the Ising model in 1D and 2D, from ordered, custom or random initial states.', lang: 'Python', year: '2022' },
+      { name: 'Large-deviation', text: 'Large-deviation functions with Monte Carlo and Markov-chain simulations.', lang: 'Jupyter', year: '2021' },
+      { name: 'Random-walk', text: 'Simulations of one- and two-dimensional random walks.', lang: 'Python', year: '2021' },
+      { name: 'Particle-Swarm-Optimization', text: 'Particle swarm optimisation implemented from scratch.', lang: 'Python', year: '2021' },
+      { name: 'Computational-Physics', text: 'Numerical solvers for ordinary differential equations.', lang: 'Jupyter', year: '2023' },
+    ],
+  },
   cv: {
     role: 'PhD Candidate in Computational Neuroscience',
     summary:
@@ -137,14 +205,22 @@ export const abolfazl: Content = {
         org: 'BCBL, Basque Center on Cognition, Brain and Language',
         place: 'San Sebastián, Spain',
         dates: 'Jul 2026 – Present',
-        details: ['Advisors: Dr. Lucia Amoruso and Dr. Manuel Carreiras', 'Research area: Brain Network Modelling'],
+        details: [
+          'Advisors: Dr. Lucia Amoruso and Dr. Manuel Carreiras',
+          'Research group: Neurobiology of Language',
+          'Research area: Brain Network Modelling',
+        ],
       },
       {
         title: 'MSc in Statistical Physics and Complex Systems',
         org: 'Department of Physics, Shahid Beheshti University',
         place: 'Tehran, Iran',
         dates: 'Sep 2023 – Dec 2025',
-        details: ['Advisor: Dr. Reza Jafari', 'Research area: Network Science'],
+        details: [
+          'Advisor: Dr. Reza Jafari',
+          'Research area: Network Science',
+          'Thesis: A Comparative Analysis of the Functional Brain Network in Controls and Individuals with Autism Spectrum Disorder using Graph Neural Networks and Hierarchical Clustering',
+        ],
       },
       {
         title: 'BSc in Physics',
@@ -194,18 +270,21 @@ export const abolfazl: Content = {
         ],
       },
     ],
+    fellowships: [{ title: 'FPI Predoctoral Fellowship', org: 'BCBL, Basque Center on Cognition, Brain and Language', dates: '2026 – 2030' }],
     presentations: [
       {
         title: 'Energy-Based Generative Transformer Models for Neural Circuit Modeling',
         authors: ['Abolfazl HaqiqiFar', 'Reza Jafari'],
         venue: 'SNUFA',
         year: '2025',
+        kind: 'Flash talk',
       },
       {
         title: 'Information-Theoretic Graph Neural Networks for Modeling Brain Connectivity',
         authors: ['Abolfazl HaqiqiFar', 'Majid Saberi', 'Reza Jafari'],
         venue: 'SNUFA',
         year: '2025',
+        kind: 'Poster',
       },
       {
         title: 'Exploring Brain Energy Modeling: Insights into Autism Spectrum Disorder',
