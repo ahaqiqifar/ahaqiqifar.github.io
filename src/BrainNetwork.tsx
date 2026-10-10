@@ -1,13 +1,14 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /*
  * Animated connectome seen from above (axial view): regions sampled inside two hemispheres,
  * short-range edges to neighbours plus long-range "fibre tract" edges, and packets of
  * information travelling along edges. A region that receives a packet lights up and may pass
- * it on, so activity cascades through the network. The pointer stimulates nearby regions.
+ * it on, so activity cascades through the network. The pointer stimulates nearby regions; with
+ * `resectable`, clicking a region removes it (a virtual resection) and activity reroutes around it.
  */
 
-type Node = { x: number; y: number; deg: number; act: number }
+type Node = { x: number; y: number; deg: number; act: number; cut: boolean }
 type Edge = { a: number; b: number; cx: number; cy: number; long: boolean }
 type Packet = { e: number; dir: 1 | -1; t: number; speed: number }
 
@@ -46,7 +47,7 @@ function buildNetwork(count: number) {
     const y = rand() * 1.9 - 0.95
     if (!inside(x, y)) continue
     if (nodes.some((n) => (n.x - x) ** 2 + (n.y - y) ** 2 < minD * minD)) continue
-    nodes.push({ x, y, deg: 0, act: 0 })
+    nodes.push({ x, y, deg: 0, act: 0, cut: false })
   }
 
   const edges: Edge[] = []
@@ -107,8 +108,12 @@ function buildNetwork(count: number) {
 
 const bez = (p0: number, c: number, p1: number, t: number) => (1 - t) * (1 - t) * p0 + 2 * (1 - t) * t * c + t * t * p1
 
-export default function BrainNetwork({ className = '', nodes: count = 150 }: { className?: string; nodes?: number }) {
+type Props = { className?: string; nodes?: number; resectable?: boolean }
+
+export default function BrainNetwork({ className = '', nodes: count = 150, resectable = false }: Props) {
   const ref = useRef<HTMLCanvasElement>(null)
+  const [cuts, setCuts] = useState(0)
+  const resetRef = useRef(() => {})
 
   useEffect(() => {
     const canvas = ref.current!
@@ -137,8 +142,11 @@ export default function BrainNetwork({ className = '', nodes: count = 150 }: { c
       if (reduced) draw()
     }
 
+    const live = (e: Edge) => !nodes[e.a].cut && !nodes[e.b].cut
+
     function emit(from: number) {
-      const list = adj[from]
+      if (nodes[from].cut) return
+      const list = adj[from].filter((k) => live(edges[k]))
       if (!list.length || packets.length > 60) return
       const e = list[Math.floor(Math.random() * list.length)]
       const edge = edges[e]
@@ -169,6 +177,7 @@ export default function BrainNetwork({ className = '', nodes: count = 150 }: { c
       outline()
 
       for (const e of edges) {
+        if (!live(e)) continue
         const A = nodes[e.a], B = nodes[e.b]
         const act = Math.max(A.act, B.act)
         ctx.strokeStyle = `rgba(${CREAM},${(e.long ? 0.07 : 0.11) + act * 0.35})`
@@ -205,6 +214,23 @@ export default function BrainNetwork({ className = '', nodes: count = 150 }: { c
 
       for (const n of nodes) {
         const [px, py] = toPx(n.x, n.y)
+        if (n.cut) {
+          // resection cavity: faint dashed ring with a cross
+          ctx.strokeStyle = `rgba(${CREAM},0.35)`
+          ctx.lineWidth = 1
+          ctx.setLineDash([2, 3])
+          ctx.beginPath()
+          ctx.arc(px, py, 9, 0, Math.PI * 2)
+          ctx.stroke()
+          ctx.setLineDash([])
+          ctx.beginPath()
+          ctx.moveTo(px - 3, py - 3)
+          ctx.lineTo(px + 3, py + 3)
+          ctx.moveTo(px + 3, py - 3)
+          ctx.lineTo(px - 3, py + 3)
+          ctx.stroke()
+          continue
+        }
         const r = 1.4 + (n.deg / maxDeg) * 2.6 + n.act * 2.2
         if (n.act > 0.05) {
           const g = ctx.createRadialGradient(px, py, 0, px, py, r * 5)
@@ -231,6 +257,7 @@ export default function BrainNetwork({ className = '', nodes: count = 150 }: { c
       while (spawnAcc > 0.14) {
         spawnAcc -= 0.14
         const i = Math.floor(Math.random() * nodes.length)
+        if (nodes[i].cut) continue
         if (Math.random() < 0.35 + 0.65 * (nodes[i].deg / maxDeg)) {
           nodes[i].act = Math.min(1, nodes[i].act + 0.6)
           emit(i)
@@ -240,6 +267,7 @@ export default function BrainNetwork({ className = '', nodes: count = 150 }: { c
       // pointer stimulation
       if (pointer.on) {
         nodes.forEach((n, i) => {
+          if (n.cut) return
           const [px, py] = toPx(n.x, n.y)
           const d = Math.hypot(px - pointer.x, py - pointer.y)
           if (d < 70) {
@@ -251,6 +279,10 @@ export default function BrainNetwork({ className = '', nodes: count = 150 }: { c
 
       for (let k = packets.length - 1; k >= 0; k--) {
         const p = packets[k]
+        if (!live(edges[p.e])) {
+          packets.splice(k, 1)
+          continue
+        }
         p.t += dt * p.speed
         if (p.t >= 1) {
           const e = edges[p.e]
@@ -290,6 +322,35 @@ export default function BrainNetwork({ className = '', nodes: count = 150 }: { c
     canvas.addEventListener('pointermove', move)
     canvas.addEventListener('pointerleave', leave)
 
+    // virtual resection: click the nearest region to remove it
+    const resect = (e: PointerEvent) => {
+      if (!resectable) return
+      const r = canvas.getBoundingClientRect()
+      const x = e.clientX - r.left, y = e.clientY - r.top
+      let best = -1, bd = 18
+      nodes.forEach((n, i) => {
+        if (n.cut) return
+        const [px, py] = toPx(n.x, n.y)
+        const d = Math.hypot(px - x, py - y)
+        if (d < bd) { bd = d; best = i }
+      })
+      if (best < 0) return
+      nodes[best].cut = true
+      // neighbours react to the loss
+      adj[best].forEach((k) => {
+        const o = edges[k].a === best ? edges[k].b : edges[k].a
+        nodes[o].act = 1
+      })
+      setCuts((c) => c + 1)
+      if (reduced) draw()
+    }
+    canvas.addEventListener('pointerdown', resect)
+    resetRef.current = () => {
+      nodes.forEach((n) => (n.cut = false))
+      setCuts(0)
+      if (reduced) draw()
+    }
+
     if (reduced) draw()
 
     return () => {
@@ -298,15 +359,35 @@ export default function BrainNetwork({ className = '', nodes: count = 150 }: { c
       io.disconnect()
       canvas.removeEventListener('pointermove', move)
       canvas.removeEventListener('pointerleave', leave)
+      canvas.removeEventListener('pointerdown', resect)
     }
-  }, [count])
+  }, [count, resectable])
 
   return (
-    <canvas
-      ref={ref}
-      className={`block h-full w-full touch-pan-y ${className}`}
-      role="img"
-      aria-label="Animated brain network: regions seen from above, with pulses of information travelling along their connections"
-    />
+    <div className={`relative h-full w-full ${className}`}>
+      <canvas
+        ref={ref}
+        className={`block h-full w-full touch-pan-y ${resectable ? 'cursor-crosshair' : ''}`}
+        role="img"
+        aria-label={
+          'Animated brain network: regions seen from above, with pulses of information travelling along their connections' +
+          (resectable ? '. Click a region to remove it in a virtual resection.' : '')
+        }
+      />
+      {resectable && cuts > 0 && (
+        <div className="absolute right-0 bottom-0 flex items-center gap-4 text-sm">
+          <span className="text-cream/50">
+            {cuts} {cuts === 1 ? 'region' : 'regions'} resected
+          </span>
+          <button
+            type="button"
+            onClick={() => resetRef.current()}
+            className="cursor-pointer text-cream transition-opacity duration-300 hover:opacity-60"
+          >
+            Reset
+          </button>
+        </div>
+      )}
+    </div>
   )
 }

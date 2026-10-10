@@ -34,6 +34,7 @@ export type ResearchTheme = {
   text: string
   methods: string
   links: Link[]
+  viz?: 'fit' | 'flow' | 'reading' | 'balance' // interactive figure shown next to the theme
 }
 
 export type Repo = { name: string; text: string; lang: string; year: string }
@@ -157,12 +158,14 @@ export const abolfazl: Content = {
         title: 'Virtual Brain Twins',
         text: 'Patient-specific whole-brain models built from diffusion-MRI connectomes and fitted to MEG with a dynamic mean-field model. In glioma patients, these twins let us perform virtual resections and predict how brain activity will reorganise after surgery.',
         methods: 'Dynamic mean-field models · structural connectomes · MEG source reconstruction',
+        viz: 'fit',
         links: [{ label: 'Project', href: '/projects/' }],
       },
       {
         title: 'Information Dynamics',
         text: 'How information moves between brain regions. With transfer entropy I map directed information flow between canonical brain networks: in autism, where the hubs of information flow shift and the network backbone fragments, and in EEG recorded while people listen to different music genres, where complex rhythms recruit a super-rich club of hub regions.',
         methods: 'Transfer entropy · mutual information · graph theory',
+        viz: 'flow',
         links: [
           { label: 'Scientific Reports', href: 'https://doi.org/10.1038/s41598-026-66002-5' },
           { label: 'bioRxiv', href: 'https://doi.org/10.64898/2026.04.22.720162' },
@@ -172,12 +175,14 @@ export const abolfazl: Content = {
         title: 'Language, Bilingualism & Dyslexia',
         text: 'How bilingual experience and the transparency of a writing system (Spanish–Basque vs. Spanish–English) shape the reading network of children aged 9–13, with and without dyslexia, combining multimodal MRI and MEG.',
         methods: 'Multimodal MRI · MEG · graph metrics · models of the visual word form area',
+        viz: 'reading',
         links: [{ label: 'BRIDGE project', href: '/projects/' }],
       },
       {
         title: 'Signed & Higher-Order Networks',
         text: 'Statistical-physics tools for brain networks beyond simple positive, pairwise links: testing structural balance theory in signed functional networks from the Human Connectome Project, where balanced triads live longer and reach higher peak energy, and inverse Ising methods for higher-order interactions.',
         methods: 'Structural balance · signed and temporal networks · inverse Ising models',
+        viz: 'balance',
         links: [{ label: 'Frontiers in Network Physiology', href: 'https://doi.org/10.3389/fnetp.2025.1681597' }],
       },
     ],
