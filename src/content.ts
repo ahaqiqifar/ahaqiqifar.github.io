@@ -39,6 +39,12 @@ export type ResearchTheme = {
 
 export type Repo = { name: string; text: string; lang: string; year: string }
 
+export type About = {
+  bio: string
+  facts: { label: string; value: string }[]
+  path: { years: string; title: string; place: string }[]
+}
+
 export type Content = {
   title: string
   brand: string
@@ -54,6 +60,7 @@ export type Content = {
   scholarUrl?: string
   publications?: Publication[]
   cv?: Cv
+  about?: About
   research?: { intro: string; themes: ResearchTheme[] }
   code?: { user: string; repos: Repo[] }
 }
@@ -150,6 +157,21 @@ export const abolfazl: Content = {
       summary: 'Theory and open challenges of inferring higher-order (beyond pairwise) interactions with inverse Ising models.',
     },
   ],
+  about: {
+    bio: 'I’m a computational neuroscientist and FPI predoctoral fellow at the Basque Center on Cognition, Brain and Language (BCBL) in San Sebastián, in the Neurobiology of Language group. Coming from statistical physics and network science, I build models of whole-brain dynamics and tools to measure how information moves through the brain.',
+    facts: [
+      { label: 'Now', value: 'PhD candidate, BCBL' },
+      { label: 'Fellowship', value: 'FPI, 2026 – 2030' },
+      { label: 'Advisors', value: 'Lucia Amoruso & Manuel Carreiras' },
+      { label: 'Based in', value: 'San Sebastián, Spain' },
+    ],
+    path: [
+      { years: '2018 – 2022', title: 'BSc in Physics', place: 'Bu-Ali Sina University, Hamedan' },
+      { years: '2022', title: 'Spring College, Physics of Complex Systems', place: 'ICTP–SISSA, Trieste' },
+      { years: '2023 – 2025', title: 'MSc, Statistical Physics & Complex Systems', place: 'Shahid Beheshti University, Tehran' },
+      { years: '2026 –', title: 'PhD, Brain Network Modelling', place: 'BCBL, San Sebastián' },
+    ],
+  },
   research: {
     intro:
       'I study how the brain’s wiring shapes its dynamics, and how those dynamics carry information. Trained in statistical physics and network science, I build whole-brain models and information-theoretic tools and apply them from glioma to bilingualism and dyslexia.',

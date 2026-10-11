@@ -6,8 +6,56 @@ import PublicationList from './PublicationList'
 import BrainNetwork from './BrainNetwork'
 import SignalTrace from './SignalTrace'
 import { ExtLink, pad } from './blocks'
+import AxonTimeline from './viz/AxonTimeline'
+import FlowChord from './viz/FlowChord'
+import ReadingNetwork from './viz/ReadingNetwork'
+import BalanceDynamics from './viz/BalanceDynamics'
+import IsingLattice from './viz/IsingLattice'
+import CoauthorNetwork, { coauthorStats } from './viz/CoauthorNetwork'
 
 const delay = (ms: number) => ({ animationDelay: `${ms}ms` })
+
+// Big section title with a small note on the right, over a cream rule
+function Heading({ title, note }: { title: string; note?: string }) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-6 border-b border-cream/20 pb-6 sm:pb-8">
+      <h2 className="m-0 text-5xl font-normal leading-none tracking-tight sm:text-7xl lg:text-8xl">{title}</h2>
+      {note && <span className="text-sm text-cream/50">{note}</span>}
+    </div>
+  )
+}
+
+// Interactive figures shown in the home page's "Live lab"
+const LAB = [
+  {
+    title: 'Information flow',
+    text: 'Directed flow between seven brain networks. Switch between control and autism patterns.',
+    figure: <FlowChord />,
+  },
+  {
+    title: 'Reading network',
+    text: 'A word travels from visual cortex to the word form area and on to language regions.',
+    figure: (
+      <div className="aspect-[4/3] w-full">
+        <ReadingNetwork />
+      </div>
+    ),
+  },
+  {
+    title: 'Structural balance',
+    text: 'A signed network resolves its unbalanced triangles and splits into two camps. Click to stir it.',
+    figure: (
+      <div className="aspect-square w-full">
+        <BalanceDynamics />
+      </div>
+    ),
+  },
+  {
+    title: 'Ising model',
+    text: 'Spins aligning with their neighbours. Slide through the critical temperature, or paint with the cursor.',
+    figure: <IsingLattice />,
+  },
+]
 
 // Home page: full-viewport photo hero, then a research preview and publications
 export default function App() {
@@ -89,12 +137,31 @@ export default function App() {
         </footer>
       </section>
 
+      {c.about && (
+        <section id="about" className="bg-[#141414] px-6 pt-20 font-hn text-cream sm:px-10 sm:pt-28">
+          <Heading title="About" note="Computational neuroscience · BCBL" />
+          <div className="grid gap-10 py-12 sm:py-16 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
+            <p className="m-0 text-2xl leading-snug sm:text-3xl">{c.about.bio}</p>
+            <dl className="m-0 grid content-start gap-0 border-t border-cream/20">
+              {c.about.facts.map((f) => (
+                <div key={f.label} className="grid grid-cols-[7rem_1fr] gap-4 border-b border-cream/20 py-3 text-sm sm:text-base">
+                  <dt className="text-cream/50">{f.label}</dt>
+                  <dd className="m-0">{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <p className="m-0 mb-6 text-sm text-cream/50">Path</p>
+          <AxonTimeline stations={c.about.path} />
+          <ExtLink href="/cv/" className="mt-10 inline-block text-sm">
+            Full CV
+          </ExtLink>
+        </section>
+      )}
+
       {c.research && (
         <section id="research" className="bg-[#141414] px-6 pt-20 font-hn text-cream sm:px-10 sm:pt-28">
-          <div className="flex items-end justify-between gap-6 border-b border-cream/20 pb-6 sm:pb-8">
-            <h2 className="m-0 text-5xl font-normal leading-none tracking-tight sm:text-7xl lg:text-8xl">Research</h2>
-            <span className="text-sm text-cream/50">Brain networks · Information · Models</span>
-          </div>
+          <Heading title="Research" note="Brain networks · Information · Models" />
           <div className="grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
             <div>
               <p className="m-0 text-2xl leading-snug sm:text-3xl">{c.research.intro}</p>
@@ -110,11 +177,53 @@ export default function App() {
                 Explore the research
               </ExtLink>
             </div>
-            <div className="mx-auto aspect-[1/1.08] w-full max-w-[560px]">
-              <BrainNetwork />
-            </div>
+            <figure className="m-0 mx-auto w-full max-w-[560px]">
+              <div className="aspect-[1/1.08] w-full">
+                <BrainNetwork resectable />
+              </div>
+              <figcaption className="mt-3 text-xs text-cream/45">
+                Hover to stimulate a region · click one to remove it (a virtual resection)
+              </figcaption>
+            </figure>
           </div>
           <SignalTrace className="text-cream/30" />
+        </section>
+      )}
+
+      <section id="lab" className="bg-[#141414] px-6 pt-20 font-hn text-cream sm:px-10 sm:pt-28">
+        <Heading title="Live lab" note="Interactive models · running in your browser" />
+        <div className="grid gap-x-12 gap-y-16 py-12 sm:py-16 md:grid-cols-2 xl:grid-cols-4 xl:gap-x-10">
+          {LAB.map((l, i) => (
+            <figure key={l.title} className="m-0 flex flex-col">
+              <span className="text-sm text-cream/50">{pad(i + 1)}</span>
+              <h3 className="mt-2 mb-0 text-2xl font-normal leading-tight">{l.title}</h3>
+              <p className="mt-2 mb-6 text-sm leading-relaxed text-cream/60">{l.text}</p>
+              <div className="mt-auto">{l.figure}</div>
+            </figure>
+          ))}
+        </div>
+        <ExtLink href="/research/" className="inline-block text-sm">
+          See how they relate to the research
+        </ExtLink>
+        <SignalTrace className="mt-16 text-cream/30" />
+      </section>
+
+      {c.publications && (
+        <section id="collaborators" className="bg-[#141414] px-6 pt-20 font-hn text-cream sm:px-10 sm:pt-28">
+          <Heading title="Collaborators" note={`${coauthorStats().people} co-authors · ${coauthorStats().papers} papers`} />
+          <div className="grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
+            <div>
+              <p className="m-0 text-2xl leading-snug sm:text-3xl">
+                Science is a network too. Each line is a paper written together; the more papers, the stronger the link.
+              </p>
+              <p className="mt-6 mb-0 max-w-md text-sm leading-relaxed text-cream/50">
+                Built live from the publication list below. Hover a person to see their connections.
+              </p>
+            </div>
+            <div className="mx-auto aspect-[4/3] w-full max-w-[640px]">
+              <CoauthorNetwork />
+            </div>
+          </div>
         </section>
       )}
 
