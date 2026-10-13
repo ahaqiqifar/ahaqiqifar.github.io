@@ -167,7 +167,6 @@ export const abolfazl: Content = {
     ],
     path: [
       { years: '2018 – 2022', title: 'BSc in Physics', place: 'Bu-Ali Sina University, Hamedan' },
-      { years: '2022', title: 'Spring College, Physics of Complex Systems', place: 'ICTP–SISSA, Trieste' },
       { years: '2023 – 2025', title: 'MSc, Statistical Physics & Complex Systems', place: 'Shahid Beheshti University, Tehran' },
       { years: '2026 –', title: 'PhD, Brain Network Modelling', place: 'BCBL, San Sebastián' },
     ],
@@ -255,13 +254,6 @@ export const abolfazl: Content = {
         place: 'Hamedan, Iran',
         dates: '2018 – 2022',
         details: ['Advisor: Dr. Farhad H. Jafarpour', 'Research area: Biophysics'],
-      },
-      {
-        title: 'Spring College in the Physics of Complex Systems',
-        org: 'ICTP–SISSA',
-        place: 'Trieste, Italy',
-        dates: '2022',
-        details: [],
       },
     ],
     interests: [

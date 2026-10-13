@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, type CSSProperties } from 'react'
 import { CREAM, FONT, glow, rng, useCanvasLoop } from './useCanvasLoop'
 
 /*
@@ -204,7 +204,10 @@ export default function AxonTimeline({ stations }: { stations: Station[] }) {
         role="img"
         aria-label="A neuron whose axon carries a spike through each step of the timeline below"
       />
-      <ol className="m-0 grid list-none gap-8 p-0 pt-16 sm:grid-cols-5 sm:gap-4 sm:pt-0">
+      <ol
+        className="m-0 grid list-none gap-8 p-0 pt-16 sm:grid-cols-[repeat(var(--cols),minmax(0,1fr))] sm:gap-4 sm:pt-0"
+        style={{ '--cols': stations.length + 1 } as CSSProperties}
+      >
         <li ref={(el) => { anchors.current[0] = el }} className="text-sm text-cream/40">
           <span className="block">Input → spike</span>
         </li>
