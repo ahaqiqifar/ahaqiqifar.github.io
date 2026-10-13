@@ -39,6 +39,19 @@ export type ResearchTheme = {
 
 export type Repo = { name: string; text: string; lang: string; year: string }
 
+export type ProjectBlock = { heading?: string; text?: string; list?: string[]; ordered?: boolean }
+
+export type Project = {
+  id: string // anchor on the Projects page
+  title: string
+  lead: string
+  meta: string[]
+  blocks: ProjectBlock[]
+  methods: string
+  links?: Link[]
+  viz: 'reading' | 'twin' | 'recurrence' | 'weather' | 'higher-order'
+}
+
 export type About = {
   bio: string
   facts: { label: string; value: string }[]
@@ -62,6 +75,7 @@ export type Content = {
   cv?: Cv
   about?: About
   research?: { intro: string; themes: ResearchTheme[] }
+  projects?: Project[]
   code?: { user: string; repos: Repo[] }
 }
 
@@ -180,7 +194,7 @@ export const abolfazl: Content = {
         text: 'Patient-specific whole-brain models built from diffusion-MRI connectomes and fitted to MEG with a dynamic mean-field model. In glioma patients, these twins let us perform virtual resections and predict how brain activity will reorganise after surgery.',
         methods: 'Dynamic mean-field models · structural connectomes · MEG source reconstruction',
         viz: 'fit',
-        links: [{ label: 'Project', href: '/projects/' }],
+        links: [{ label: 'Project', href: '/projects/#virtual-brain-twins' }],
       },
       {
         title: 'Information Dynamics',
@@ -197,7 +211,7 @@ export const abolfazl: Content = {
         text: 'How bilingual experience and the transparency of a writing system (Spanish–Basque vs. Spanish–English) shape the reading network of children aged 9–13, with and without dyslexia, combining multimodal MRI and MEG.',
         methods: 'Multimodal MRI · MEG · graph metrics · models of the visual word form area',
         viz: 'reading',
-        links: [{ label: 'BRIDGE project', href: '/projects/' }],
+        links: [{ label: 'BRIDGE project', href: '/projects/#reading-brain' }],
       },
       {
         title: 'Signed & Higher-Order Networks',
@@ -208,6 +222,135 @@ export const abolfazl: Content = {
       },
     ],
   },
+  projects: [
+    {
+      id: 'reading-brain',
+      title: 'Bilingualism, Orthographic Transparency, and the Reading Brain',
+      lead: 'How does learning to read in more than one language change the brain’s reading network?',
+      meta: [
+        'PhD project · BRIDGE, BCBL',
+        'Supervised by Manuel Carreiras and Lucia Amoruso',
+        'Funded under BRIDGE (PID2024-159134OB-I00)',
+      ],
+      blocks: [
+        {
+          text: 'This PhD project, part of the BRIDGE project at the BCBL (Basque Center on Cognition, Brain and Language), investigates how bilingual experience and the transparency of a writing system shape the reading circuit in children aged 9 to 13, both in typical readers and in children with dyslexia.',
+        },
+        {
+          text: 'The study compares two language pairings: Spanish–Basque, where both orthographies are transparent, and Spanish–English, where a transparent orthography is paired with an opaque one. This contrast makes it possible to separate the effect of bilingualism itself from the effect of the spelling-to-sound consistency of each language.',
+        },
+        {
+          text: 'The project combines structural and functional MRI, diffusion MRI, and MEG with behavioural measures of reading, phonological processing, and visual attention span. Analyses draw on network science and information theory, including graph-theoretic metrics and transfer entropy, together with computational models of the visual word form area, to characterise how information flows through the reading network across groups.',
+        },
+        {
+          text: 'The aim is a mechanistic account of how language experience and orthography jointly shape reading development, with implications for understanding and supporting dyslexia in multilingual settings.',
+        },
+      ],
+      methods: 'Structural & functional MRI · diffusion MRI · MEG · graph theory · transfer entropy · models of the visual word form area',
+      viz: 'reading',
+    },
+    {
+      id: 'virtual-brain-twins',
+      title: 'Virtual Brain Twins for Glioma Patients',
+      lead: 'Personalised computer models of the brains of patients with glioma, built to simulate what surgery would do to brain activity before it happens.',
+      meta: ['PhD project · BCBL', 'Supervised by Lucia Amoruso and Manuel Carreiras'],
+      blocks: [
+        {
+          text: 'I build personalised computer models of the brains of patients with glioma, a type of brain tumour. Each model, or “twin”, is built from the patient’s own MRI scans and fitted to their own magnetoencephalography (MEG) recording. The goal is to simulate what surgery would do to brain activity before it happens.',
+        },
+        {
+          heading: 'The question',
+          text: 'Removing a glioma means removing, or disconnecting, part of the brain’s wiring. Surgeons plan carefully, but it is hard to know in advance how the rest of the brain will respond. This project asks whether a patient-specific computational model can help answer that.',
+        },
+        {
+          heading: 'The approach',
+          text: 'For each patient, I build a virtual copy of their brain in three steps:',
+          ordered: true,
+          list: [
+            'Wiring. From diffusion MRI and tractography, I reconstruct each patient’s structural connectome, the map of white-matter connections between brain regions.',
+            'Dynamics. I place a neural mass model (a dynamic mean-field model) on that wiring and tune it so the simulated activity matches the patient’s own resting-state MEG.',
+            'Virtual surgery. I remove the resected region from the model and compare the simulated activity with what is observed after surgery.',
+          ],
+        },
+        {
+          heading: 'What I’m investigating',
+          list: [
+            'How well a model fitted to one patient’s MEG can reproduce their brain activity.',
+            'Whether virtual resections agree with the clinical records of what was actually removed.',
+            'How robust the results are to modelling choices such as brain atlas, source reconstruction and noise.',
+            'Whether MEG-based twins perform better than fMRI-based twins for the same patients.',
+          ],
+        },
+        {
+          heading: 'Why it matters',
+          text: 'If the twins prove reliable, they could eventually help clinicians estimate the functional consequences of a resection for an individual patient.',
+        },
+      ],
+      methods: 'Diffusion MRI & tractography · structural connectomes · dynamic mean-field models · resting-state MEG',
+      viz: 'twin',
+    },
+    {
+      id: 'glioma-recurrence',
+      title: 'Predicting where gliomas recur: a patient-specific model of tumour spread',
+      lead: 'Gliomas almost always return after surgery, sometimes several centimetres from the original site.',
+      meta: ['Public dataset of 243 patients · own cohort of 64 patients, 41 scanned before and after surgery'],
+      blocks: [
+        {
+          text: 'Gliomas almost always return after surgery, sometimes several centimetres from the original site. Standard growth models, in which tumour cells multiply and diffuse evenly outward, cannot explain these distant recurrences.',
+        },
+        {
+          text: 'This project builds a personalised model of glioma spread for each patient from pre-surgical brain imaging, and tests two ideas. The first is that tumour cells travel along the brain’s white-matter wiring in long jumps, which we describe with anomalous (fractional) diffusion that contains the standard model as a special case. The second is that tumours grow faster in regions functionally connected to them, measured with resting-state fMRI.',
+        },
+        {
+          text: 'Each idea adds only one or two parameters to the standard model, and is kept only if it predicts the true recurrence location better in patients the model has not seen. The diffusion question is tested on a public dataset of 243 patients. The fMRI question is tested on our own cohort of 64 patients, 41 of them scanned before and after surgery.',
+        },
+        {
+          text: 'The long-term aim is a tool that indicates where a tumour is likely to return, to support surgical and radiotherapy planning.',
+        },
+      ],
+      methods: 'Reaction–diffusion models · anomalous (fractional) diffusion · tractography · resting-state fMRI · out-of-sample validation',
+      viz: 'recurrence',
+    },
+    {
+      id: 'texas-weather',
+      title: 'Network Analysis of Weather Extremes in Texas',
+      lead: 'Can information flow between locations help predict extreme weather?',
+      meta: ['Data: NOAA AORC · 8 meteorological variables · 245 locations · daily, 1981–2025'],
+      blocks: [
+        {
+          text: 'This project models Texas weather as a network and asks whether information flow between locations can help predict extreme events. I use NOAA’s AORC gridded dataset: eight meteorological variables, daily, at 245 points across Texas from 1981 to 2025.',
+        },
+        {
+          text: 'After detrending each location’s time series, I build a directed network between locations using transfer entropy, which quantifies how much one site’s past reduces uncertainty about another’s future.',
+        },
+        {
+          text: 'The goal is a prediction approach for weather extremes that draws on network science rather than standard forecasting methods, with the structure of directed influence across the state as the starting point.',
+        },
+      ],
+      methods: 'Transfer entropy · directed networks · time-series detrending · extreme-event prediction',
+      viz: 'weather',
+    },
+    {
+      id: 'higher-order-interactions',
+      title: 'Detecting Higher-Order Interactions Beyond the Inverse Ising Model',
+      lead: 'What happens to pairwise models when the real system also contains three-body interactions?',
+      meta: ['With Paria Naghizadeh, Behrouz Askari and Reza Jafari'],
+      blocks: [
+        {
+          text: 'Many complex systems, from neural populations to financial markets, are modelled with the Ising model, which assumes that all interactions are pairwise. Inverse Ising methods (independent-pair, naive mean-field, susceptibility-propagation and TAP) try to recover those pairwise couplings from observed correlations. This project asks what happens when the real system also contains three-body interactions.',
+        },
+        {
+          text: 'We show that the standard pairwise inversion schemes become unreliable in that regime, and that the reconstruction errors carry a signature of the missing higher-order structure. We use this to build a machine-learning classifier trained on the eigenvalue spectra of correlation matrices. It flags whether a system’s dynamics are purely pairwise or involve higher-order interactions, without requiring the interactions themselves to be inferred first.',
+        },
+        {
+          text: 'We then apply the approach to S&P 500 stock data, where a pairwise description is commonly assumed.',
+        },
+      ],
+      methods: 'Inverse Ising (independent-pair, naive mean-field, susceptibility propagation, TAP) · eigenvalue spectra · machine learning · S&P 500 data',
+      links: [{ label: 'Manuscript under review', href: '/publications/' }],
+      viz: 'higher-order',
+    },
+  ],
   code: {
     user: 'https://github.com/AbolfazlHaqiqiFar',
     repos: [

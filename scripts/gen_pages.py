@@ -19,7 +19,8 @@ PAGES = [
     ('research/', 'research-main.tsx', f'Research — {NAME}',
      'Virtual brain twins, information dynamics, language and dyslexia, and signed and higher-order brain networks.'),
     ('projects/', 'projects-main.tsx', f'Projects — {NAME}',
-     'Current research projects at BCBL and open-source code for brain network analysis and statistical physics.'),
+     'Bilingual reading networks, virtual brain twins for glioma, modelling where gliomas recur, '
+     'transfer-entropy networks of Texas weather extremes, and higher-order interactions beyond the inverse Ising model.'),
     ('publications/', 'publications-main.tsx', f'Publications — {NAME}',
      f'Papers and preprints by {NAME} on information flow, structural balance and brain network dynamics.'),
     ('cv/', 'cv-main.tsx', f'CV — {NAME}',

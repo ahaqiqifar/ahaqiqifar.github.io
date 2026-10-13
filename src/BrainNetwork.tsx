@@ -29,13 +29,28 @@ function rng(seed: number) {
 // slightly wider at the back, so the poles are rounded with a small notch between hemispheres.
 const HEMI = { fissure: 0.022, rx: 0.4, cy: 0.02, ry: 0.98, lateral: 2.2, medial: 7, q: 2.1 }
 const hemiRx = (y: number) => HEMI.rx * (1 + 0.08 * y)
-const inside = (x: number, y: number) => {
+export const inside = (x: number, y: number) => {
   const ax = Math.abs(x)
   if (ax < HEMI.fissure + 0.02) return false
   const u = (ax - HEMI.fissure) / hemiRx(y) - 1 // -1 at the fissure, +1 at the lateral edge
   const p = u < 0 ? HEMI.medial : HEMI.lateral
   const v = Math.abs((y - HEMI.cy) / HEMI.ry)
   return Math.abs(u) ** p + v ** HEMI.q <= 0.9
+}
+
+// Outline of both hemispheres as polylines in normalised coords (shared with other figures)
+export function brainOutline(steps = 200): [number, number][][] {
+  return [-1, 1].map((side) => {
+    const pts: [number, number][] = []
+    for (let k = 0; k <= steps; k++) {
+      const th = (2 * Math.PI * k) / steps
+      const c = Math.cos(th), sn = Math.sin(th)
+      const y = HEMI.cy + HEMI.ry * Math.sign(sn) * Math.abs(sn) ** (2 / HEMI.q)
+      const u = Math.sign(c) * Math.abs(c) ** (2 / (c < 0 ? HEMI.medial : HEMI.lateral))
+      pts.push([side * (HEMI.fissure + hemiRx(y) * (1 + u)), y])
+    }
+    return pts
+  })
 }
 
 function buildNetwork(count: number) {
@@ -156,17 +171,12 @@ export default function BrainNetwork({ className = '', nodes: count = 150, resec
     function outline() {
       ctx.strokeStyle = `rgba(${CREAM},0.14)`
       ctx.lineWidth = 1
-      for (const side of [-1, 1]) {
+      for (const hemi of brainOutline()) {
         ctx.beginPath()
-        for (let k = 0; k <= 200; k++) {
-          const th = (2 * Math.PI * k) / 200
-          const c = Math.cos(th), sn = Math.sin(th)
-          const y = HEMI.cy + HEMI.ry * Math.sign(sn) * Math.abs(sn) ** (2 / HEMI.q)
-          const u = Math.sign(c) * Math.abs(c) ** (2 / (c < 0 ? HEMI.medial : HEMI.lateral))
-          const x = HEMI.fissure + hemiRx(y) * (1 + u)
-          const [px, py] = toPx(side * x, y)
+        hemi.forEach(([x, y], k) => {
+          const [px, py] = toPx(x, y)
           k ? ctx.lineTo(px, py) : ctx.moveTo(px, py)
-        }
+        })
         ctx.closePath()
         ctx.stroke()
       }
