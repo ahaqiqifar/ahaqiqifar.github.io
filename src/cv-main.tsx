@@ -1,10 +1,5 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
 import CvPage from './CvPage'
+import { mount } from './mount'
 import './index.css'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <CvPage />
-  </StrictMode>,
-)
+mount(CvPage)

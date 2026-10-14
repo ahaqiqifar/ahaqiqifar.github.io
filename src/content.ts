@@ -485,4 +485,4 @@ export const abolfazl: Content = {
 }
 
 export const content: Content =
-  new URLSearchParams(window.location.search).get('v') === 'reference' ? reference : abolfazl
+  typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('v') === 'reference' ? reference : abolfazl

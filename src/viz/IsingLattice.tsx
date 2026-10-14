@@ -24,10 +24,11 @@ export default function IsingLattice({ className = '' }: { className?: string })
 
   function make() {
     const spins = new Int8Array(L * L).map(() => (Math.random() < 0.5 ? 1 : -1))
-    const off = document.createElement('canvas')
-    off.width = off.height = L
-    const octx = off.getContext('2d')!
-    return { spins, off, octx, img: octx.createImageData(L, L), T: 2.27, frames: 0, paint: null as null | { x: number; y: number } }
+    // offscreen canvas is created on the first draw (browser only)
+    return {
+      spins, T: 2.27, frames: 0, paint: null as null | { x: number; y: number },
+      off: null as HTMLCanvasElement | null, octx: null as CanvasRenderingContext2D | null, img: null as ImageData | null,
+    }
   }
 
   const sweep = () => {
@@ -55,14 +56,20 @@ export default function IsingLattice({ className = '' }: { className?: string })
         for (let dx = -3; dx <= 3; dx++)
           if (dx * dx + dy * dy <= 9) s.spins[((y + dy + L) % L) * L + ((x + dx + L) % L)] = 1
     }
-    const d = s.img.data
+    if (!s.off) {
+      s.off = document.createElement('canvas')
+      s.off.width = s.off.height = L
+      s.octx = s.off.getContext('2d')!
+      s.img = s.octx.createImageData(L, L)
+    }
+    const d = s.img!.data
     let sum = 0
     for (let i = 0; i < L * L; i++) {
       const c = s.spins[i] > 0 ? UP : DOWN
       sum += s.spins[i]
       d[i * 4] = c[0]; d[i * 4 + 1] = c[1]; d[i * 4 + 2] = c[2]; d[i * 4 + 3] = 255
     }
-    s.octx.putImageData(s.img, 0, 0)
+    s.octx!.putImageData(s.img!, 0, 0)
     ctx.imageSmoothingEnabled = false
     ctx.clearRect(0, 0, w, h)
     ctx.drawImage(s.off, 0, 0, w, h)

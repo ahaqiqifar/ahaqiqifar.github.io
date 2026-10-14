@@ -9,19 +9,28 @@ import { CREAM, FONT, glow, useCanvasLoop } from './useCanvasLoop'
  * Words cycle through Spanish, Basque and English, the languages of the BRIDGE project. Illustrative.
  */
 
-// design box 400 x 290
-const BRAIN = new Path2D(
+// design box 400 x 290 (SVG path data)
+const BRAIN_D =
   'M52 170 C34 112 76 52 156 40 C226 29 306 44 350 90 C379 120 388 156 372 186 C362 204 338 214 304 212 ' +
-    'C284 232 244 246 204 240 C174 235 154 218 144 204 C124 214 84 216 64 200 C54 192 50 181 52 170 Z',
-)
-const SULCI = [
-  new Path2D('M144 204 C172 178 212 163 262 158'), // lateral (Sylvian) fissure
-  new Path2D('M210 42 C204 82 198 112 188 152'), // central sulcus
-  new Path2D('M170 222 C200 214 236 210 278 204'), // superior temporal sulcus
-  new Path2D('M300 64 C292 96 296 126 314 150'), // intraparietal / parieto-occipital hint
+  'C284 232 244 246 204 240 C174 235 154 218 144 204 C124 214 84 216 64 200 C54 192 50 181 52 170 Z'
+const SULCI_D = [
+  'M144 204 C172 178 212 163 262 158', // lateral (Sylvian) fissure
+  'M210 42 C204 82 198 112 188 152', // central sulcus
+  'M170 222 C200 214 236 210 278 204', // superior temporal sulcus
+  'M300 64 C292 96 296 126 314 150', // intraparietal / parieto-occipital hint
 ]
-const CEREBELLUM = new Path2D('M286 214 C300 238 344 244 364 226 C376 214 372 196 360 192 C340 206 312 214 286 214 Z')
-const STEM = new Path2D('M262 228 C266 246 268 262 266 284')
+const CEREBELLUM_D = 'M286 214 C300 238 344 244 364 226 C376 214 372 196 360 192 C340 206 312 214 286 214 Z'
+const STEM_D = 'M262 228 C266 246 268 262 266 284'
+
+// Path2D only exists in the browser, so build the shapes on first use
+let shapes: { BRAIN: Path2D; SULCI: Path2D[]; CEREBELLUM: Path2D; STEM: Path2D } | null = null
+const getShapes = () =>
+  (shapes ??= {
+    BRAIN: new Path2D(BRAIN_D),
+    SULCI: SULCI_D.map((d) => new Path2D(d)),
+    CEREBELLUM: new Path2D(CEREBELLUM_D),
+    STEM: new Path2D(STEM_D),
+  })
 
 const NODES = {
   V1: { x: 362, y: 168, label: 'V1' },
@@ -82,6 +91,7 @@ export default function ReadingNetwork({ className = '' }: { className?: string 
     ctx.scale(k, k)
     ctx.lineWidth = 1 / k
     ctx.strokeStyle = `rgba(${CREAM},0.22)`
+    const { BRAIN, SULCI, CEREBELLUM, STEM } = getShapes()
     ctx.stroke(BRAIN)
     ctx.stroke(CEREBELLUM)
     ctx.stroke(STEM)

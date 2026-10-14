@@ -5,6 +5,10 @@ const isExternal = (href: string) => href.startsWith('http')
 export const linkProps = (href: string) =>
   isExternal(href) ? { href, target: '_blank', rel: 'noreferrer' } : { href }
 
+// Path of the page being rendered: set by the build-time prerender, otherwise the browser's location
+let ssrPath: string | null = null
+export const setSsrPath = (p: string) => (ssrPath = p)
+const currentPath = () => ssrPath ?? (typeof window === 'undefined' ? '/' : window.location.pathname)
+
 // Is this nav link the page we're on? ('/publications/' matches '/publications/' and '/publications/index.html')
-export const isCurrent = (href: string) =>
-  href.startsWith('/') && href !== '/' && window.location.pathname.startsWith(href)
+export const isCurrent = (href: string) => href.startsWith('/') && href !== '/' && currentPath().startsWith(href)

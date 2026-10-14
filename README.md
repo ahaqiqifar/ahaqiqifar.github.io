@@ -4,6 +4,8 @@ Personal website of Abolfazl HaqiqiFar — computational neuroscience, network s
 
 Built with Vite, React, TypeScript and Tailwind CSS. Every push to `main` is built and published to GitHub Pages by `.github/workflows/deploy.yml`.
 
+`npm run build` also prerenders every page (`src/entry-server.tsx` + `scripts/prerender.mjs`), so the full text is in the HTML before JavaScript runs, for search engines and link previews. In the browser the page then takes over the prerendered HTML (`src/mount.tsx`). Code that touches `window`, `document` or canvas must run in effects or event handlers, not during render.
+
 ## Develop
 
 ```bash
